@@ -13,7 +13,7 @@ int op_mod(int a, int b);
 *
 * Return: The sum of a and b.
 */
-int op_add(a, int b)
+int op_add(int a, int b)
 {
 	return (a + b);
 }
@@ -25,7 +25,7 @@ int op_add(a, int b)
 *
 * Return: The defference of a and b.
 */
-int op_sub(int a, int b);
+int op_sub(int a, int b)
 {
 	return (a - b);
 }
@@ -39,7 +39,7 @@ int op_sub(int a, int b);
 */
 int op_mul(int a, int b)
 {
-	return (foo * bar);
+	return (a * b);
 }
 
 /**
