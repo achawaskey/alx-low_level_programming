@@ -1,10 +1,15 @@
-global main
-extern printf
-main:
+msg: db "Hello, Holberton", 0
+fmt: db "%s", 10, 0
 
-mov edi, format
-xor eax, eax
-call printf
+extern printf
+global main
+
+main:
+mov esi, msg
+mov edi, fmt
 mov eax, 0
+
+call printf
+
+move eax, 0
 ret
-format: db 'Hello, Holberton\n',0
