@@ -1,42 +1,87 @@
 #include <stdlib.h>
 #include "main.h"
 
-/**
-* count_word - helper function to count the number of words in sstring
-* @s: string to evaluate
-*
-* Return: number of wordd
-*/
-int count_word(char *s)
-{
-	int flag c, w;
-
-	flag = 0;
-	w = 0;
-
-	for (c = 0, s[c] != '\0'; c++)
-	{
-		if (s[c] == ' ')
-			flag = 0;
-		else if (flag == 0)
-		{
-			flag = 1;
-			w++;
-		}
-	}
-	return (w);
-}
+void utill(char **, char *);
+void create_word(char **, char *, int, int, int);
 
 /**
-* **strtow - split a string into word
-* @str: string to split
-*
-* Return: pointer to an array of string (success)
-* or NULL (error)
-*/
+ * strtow - splits a string into words.
+ * @str: the string
+ *
+ * Return: returns a pointer to an array of string (words)
+ */
 char **strtow(char *str)
 {
-	char **strtow, *tmp;
-	int i, k = 0,
+	int i, flag, len;
+	char **words;
+
+	if (str == NULL || str[0] == '\0' || (str[0] == ' ' && str[1] == '\0'))
+		return (NULL);
+
+	i = flag = len = 0;
+	while (str[i])
+	{
+		if (flag == 0 && str[i] != ' ')
+			flag = 1;
+		if (i > 0 && str[i] == ' ' && str[i - 1] != ' ')
+		{
+			flag = 0;
+			len++;
+		}
+		i++;
+	}
+
+	len += flag == 1 ? 1 : 0;
+	if (len == 0)
+		return (NULL);
+
+	utill(words, str);
+	words[len] = NULL;
+	return (words);
 }
-		
+
+/**
+ * utill - a utill function for fetching words into an array
+ * @words: the strings array
+ * @str: the string
+ */
+void utill(char **words, char *str)
+{
+	int i, j, start, flag;
+
+	i = j = flag = 0;
+	while (str[i])
+	{
+		start = i;
+		flag = i;
+	}
+
+	if (i > 0 && str[i] == ' ' && str[i - 1] != ' ')
+	{
+		create_word(words, str, start, i, j);
+		j++;
+	}
+
+	if (flag == 1)
+		create_word(words, str, start, i, j);
+}
+
+/**
+ * create_word - creates a word and insert it into the array
+ * @words: the array of strings
+ * @str: the string
+ * @start: the starting index of the word
+ * @end: the stopping index of the word
+ * @index: the index of the array to insert the word
+ */
+void create_word(char **words, char *str, int start, int end, int index)
+{
+	int i, j;
+
+	i = end - start;
+	words[index] = (char *)malloc(sizeof(char) * (i + 1));
+
+	for (j = 0; start < end; start++, j++)
+		words[index][j] = str[start];
+	words[index][j] = '\0';
+}
