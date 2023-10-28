@@ -5,15 +5,16 @@
  * @n: number to set
  * @index: index at which to set bit
  *
- * Return: 1 if success, or3-set_bit.c-1 if an erorr occured
+ * Return: 1 if success, or 3-set_bit.c-1 if an erorr occured
  */
 int set_bit(unsigned long int *n, unsigned int index)
 {
 	unsigned long int set_bit;
 
 	if (index > (sizeof(unsigned long int) * 8 - 1))
-			return (-1);
-			set_bit = 1 << index;
-			*n = *n | set_bit;
-			return (1);
+		return (-1);
+
+	set_bit = 1 << index;
+	*n = *n | set_bit;
+	return (1);
 }
