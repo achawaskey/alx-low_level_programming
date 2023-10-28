@@ -1,48 +1,33 @@
 #include "main.h"
 
 /**
- * _pow - Calculate the pwoer of a number
- * @base: base of the exponent
- * @exponent: The exponent
- *
- * Retrun: The result of base raised to the power of exponent.
+ * print_bi - print the binary representation of a number recursively
+ * @n: the decimal input
+ * Return: void
  */
-double _pow(double base, int exponent)
+void print_bi(unsigned long int n)
 {
-	double num;
-	int a;
-
-	num = 1;
-	for (a = 1; a <= exponent; a++)
-		num *= base;
-	return (num);
+	if (n == 0)
+		return;
+	print_bi(n >> 1);
+	if ((n & 1) == 1)
+		_putchar('1');
+	if ((n & 1) == 0)
+		_putchar('0');
 }
 
 /**
- * print_binary - prints a number in binary notation
- * @n: number to print
- *
- * Return: void
- */
+* print_binary - prints a number in binary notation
+* @n: number to print
+*
+* Return: void
+*/
 void print_binary(unsigned long int n)
 {
-	unsigned long int divisor, check;
-	char flag;
-
-	flag = 0;
-	divisor = _pow(2, sizeof(unsigned long int) * 8 - 1);
-	while (divisor != 0)
+	if (n == 0)
+		_putchar('0');
+	else
 	{
-		check = n & divisor;
-		if (check == divisor)
-		{
-			flag = 1;
-			_putchar('1');
-		}
-		else if (flag == 1 || divisor == 1)
-		{
-			_putchar('0');
-		}
-		divisor >>= 1;
+		print_bi(n);
 	}
 }
