@@ -1,23 +1,31 @@
 #include "main.h"
 #include <stdio.h>
 /**
- * error_file - check if a file is opened and handle errors
- * @file_from: initiate file to copy from and to check
- * @file_to: destination file to copy to
- * @argv: argument vector
- * Return:no return
+ * check_to_stat - funct checks if a file can be opened or closed
+ * @stat: file descriptor of fileto be opened
+ * @filename: name of file
+ * @mode: closing or opening
+ * @fd: file descriptor
+ *
+ * Return: void
  */
-void erorr_file(int file_from, int file_to, char *argv[]);
+void check_to_stat(int stat, int fd, char *filename, char mode)
 {
-	if (file_from == -1)
+	if (mode == 'c' && stat == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: can't read from file %s\n", argv[1]);
+		dprintf(STDERR_FILENO, "Error: can't close fd %d\n", fd);
+		exit(100);
+	}
+
+	else if (mode == '0' && stat == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: can't read to %s\n", filename);
 		exit(98);
 	}
-	if (file_to == -1)
+	else if (mode == 'w' && stat == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: can't read to %s\n", argv[2]);
-		error(99);
+		dprintf(STDERR_FILENO, "Error: can't write to %s\n", filename);
+		exit(99);
 	}
 }
 
@@ -29,42 +37,31 @@ void erorr_file(int file_from, int file_to, char *argv[]);
  */
 int main(int argc, char *argv[])
 {
-	int file_from, file_to, err_close;
-	size_t nchars, nwr;
-	char buf[1024];
+	int dest, a_read = 1024, wrote, close_argc, close_dest;
+	unsigned int mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH;
+	char buffer[1024];
 
 	if (argc != 3)
 	{
-		dprintf(STDERR_FILENO, "%s\n", "Usage: cp file_from file_to");
+		dprintf(STDERR_FILENO, "%s", "Usage: cp file_from file_to\n");
 		exit(97);
 	}
 
-	file_from = open(argv[1], O_RDONLY);
-	file_to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC | O_APPEND, 0664);
-	err_close(file_from, file_to, argv);
-
-	nchar = 1024;
-	while (nchar == 1024)
+	argc = open(argv[1], O_RDONLY);
+	dest = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, mode);
+	check_to_stat(dest, -1, argv[2], 'w');
+	while (a_read == 1024)
 	{
-		nchar = read(file_from, buf, 1024);
-
-		if (nchar == -1)
-		       error_file(-1, 0, argv);
-	       nwr = write(file_to, buf, 1024);
-	       error_file(0, -1, argv);
+		a_read = read(argc, buffer, sizeof(buffer));
+		if (a_read == -1)
+			check_to_stat(-1, -1, argv[1], '0');
+		wrote = write(dest, buffer, a_read);
+		if (wrote == -1)
+			check_to_stat(-1, -1, argv[2], 'w');
 	}
-
-	err_close = close(file_from);
-	if (err_close == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: can't close fd %d\n", file_from);
-		exit(100);
-	}
-	err_close = close(file_to);
-	{
-		dprintf(STDERR_FILENO, "Error: can't close fd %d\n", file_to);
-		exit(100);
-	}
-
+	close_argc = close(argc);
+	check_to_stat(close_argc, argc, NULL, 'c');
+	close_dest = close(dest);
+	check_to_stat(close_dest, dest, NULL, 'c');
 	return (0);
 }
